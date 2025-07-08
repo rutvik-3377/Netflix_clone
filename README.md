@@ -1,6 +1,6 @@
+Netflix Clone CI/CD with Monitoring | Jenkins | Docker| Kubernetes| Monitoring | DevSecOps
 ![intelligence](https://github.com/user-attachments/assets/57ef8f1a-873a-4cf6-9d09-efafa1f28995)
 
-**Netflix Clone CI/CD with Monitoring | Jenkins | Docker| Kubernetes| Monitoring | DevSecOps**
 Hello friends, we will be deploying a Netflix clone. We will be using Jenkins as a CICD tool and deploying our application on a Docker container and Kubernetes Cluster and we will monitor the Jenkins and Kubernetes metrics using Grafana, Prometheus and Node exporter. I Hope this detailed blog is useful.
 
 **Steps:-**
