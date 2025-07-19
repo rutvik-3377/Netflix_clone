@@ -1,7 +1,8 @@
 
 # 🚀 Jenkins + SonarQube + Prometheus + Grafana Full DevOps Setup (AWS EC2)
 
-![Screenshot](flow.png)
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/8ef9bd41-578d-47a8-a927-d1c30884ce59" />
+
 
 This guide covers setting up a full CI/CD and monitoring infrastructure using Jenkins, SonarQube, Prometheus, and Grafana across two AWS EC2 instances running Ubuntu 22.04.
 
@@ -564,12 +565,16 @@ pipeline {
 
 ---
 
-![Output Screenshot](All-Pipeline-Success.png)
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/c85c335a-a1f7-4f24-8d87-8a7e4e751d51" />
 
-![Output Screenshot](Dependency-Check-Trend.png)
 
-![Output Screenshot](Dependency-Check-Report.png)
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/93c9ed84-7a74-4061-83ad-4f9aa552fcbf" />
 
-![Output Screenshot](Netflix.png)
+
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/bfd5d3bf-289c-4f8b-b5c5-dfff6acff61b" />
+
+
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/8ae845c2-269c-4c63-a11e-8d2f0557e4fb" />
+
 
 ---
