@@ -1221,6 +1221,119 @@ stage('Deploy to container'){
             }
         }
 ```
+**Final Pipeline with add all stages**
+
+```
+pipeline {
+    agent any
+ 
+    tools {
+        jdk 'jdk17'
+        nodejs 'node16'
+    }
+ 
+    environment {
+        SCANNER_HOME = tool 'sonar-scanner'
+    }
+ 
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+ 
+        stage('Checkout from Git') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Aj7Ay/Netflix-clone.git'
+            }
+        }
+ 
+        stage('Sonarqube Analysis') {
+            steps {
+                withSonarQubeEnv('sonar-server') {
+                    sh '''$SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.projectName=Netflix \
+                        -Dsonar.projectKey=Netflix'''
+                }
+            }
+        }
+ 
+        stage('Quality Gate') {
+            steps {
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+                }
+            }
+        }
+ 
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+ 
+        stage('OWASP FS SCAN') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+ 
+        stage('TRIVY FS SCAN') {
+            steps {
+                sh 'trivy fs . > trivyfs.txt'
+            }
+        }
+ 
+        stage('Docker Build & Push') {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
+                        sh 'docker build --build-arg TMDB_V3_API_KEY=626fe3f7d2e721c6d51e76f35e8d74da -t netflix .'
+                        sh 'docker tag netflix 9016514790/netflix:latest'
+                        sh 'docker push 9016514790/netflix:latest'
+                    }
+                }
+            }
+        }
+ 
+        stage('TRIVY Image Scan') {
+            steps {
+                sh 'trivy image 9016514790/netflix:latest > trivyimage.txt'
+            }
+        }
+ 
+        stage('Deploy to Container') {
+            steps {
+                script {
+                    // Optional: Stop & remove existing container if it exists
+                    sh '''
+                        docker rm -f netflix || true
+                        docker run -d --name netflix -p 8081:80 9016514790/netflix:latest
+                    '''
+                }
+            }
+        }
+    }
+ 
+    post {
+        always {
+            emailext(
+                attachLog: true,
+                subject: "'${currentBuild.result}'",
+                body: """
+                    Project: ${env.JOB_NAME}<br/>
+                    Build Number: ${env.BUILD_NUMBER}<br/>
+                    URL: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a>
+                """,
+                to: 'rutvik@gmail.com',
+                attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+            )
+        }
+    }
+}
+```
 
 stage view
 
